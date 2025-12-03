@@ -12,7 +12,6 @@ missing
 .cproject
 .deps/
 .project
-Makefile
 config.h
 config.log
 config.status
