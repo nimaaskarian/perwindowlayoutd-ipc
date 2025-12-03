@@ -1,7 +1,11 @@
+#include <bits/stdc++.h>
 #include <iostream>
 #include <map>
 #include <string>
 
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <stdio.h>
 #include <unistd.h>
 
@@ -26,6 +30,9 @@ WindowLayouts windowLayouts;
 const char *prefix = "perwindowlayout:: ";
 
 const static long rootEvents = StructureNotifyMask | SubstructureNotifyMask | FocusChangeMask | KeymapStateMask;
+const static char * fifoPath = "/tmp/perwindowlayoutd-ipc.fifo";
+const static int fifoBuffSize = 100;
+bool fifoLoopContinue = true;
 
 void init() {
   int xkbError, reason;
@@ -108,10 +115,27 @@ void mainLoop() {
   }
 }
 
+void readFifoSetWindowLoop() {
+  int fd;
+  mkfifo(fifoPath, 0644);
+  char buff[fifoBuffSize];
+  while (fifoLoopContinue) {
+    cout << "opened "<<fifoPath<<" for read\n";
+    fd = open(fifoPath, O_RDONLY);
+    cout << "read ended\n";
+	  read(fd, buff, sizeof(buff));
+    Window window;
+    Layout layout;
+    sscanf(buff, "%lx %d\n", &window, &layout);
+    windowLayouts[window] = layout;
+    close(fd);
+  }
+}
+
 int main(int argc, char **argv) {
   string noDaemonArg = "-n", helpArg = "-h";
   if (argc > 2 || (argc == 2 && argv[1] != noDaemonArg) || (argc == 2 && argv[1] == helpArg)) {
-    cout << "Keep per-window keyboard layout\n\nUsage: perWindowLayout [ -n ] [ -h ]\n\t-n\tdo not daemonize\n-h	this message\n";
+    cout << "Keep per-window keyboard layout\n\nUsage: perWindowLayout [ -n ] [ -h ]\n\t-n\tdo not daemonize\n\t-h	this message\n";
     return 1;
   }
 
@@ -122,6 +146,9 @@ int main(int argc, char **argv) {
   }
 
   init();
+  thread t(readFifoSetWindowLoop);
   mainLoop();
+  fifoLoopContinue = false;
+  t.join();
   return 0;
 }
