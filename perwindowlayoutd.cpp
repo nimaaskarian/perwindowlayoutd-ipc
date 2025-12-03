@@ -23,7 +23,7 @@ const Layout Unknown = -1;
 typedef map<Window, Layout> WindowLayouts;
 WindowLayouts windowLayouts;
 
-const char *prefix = "perWindowLayout:: ";
+const char *prefix = "perwindowlayout:: ";
 
 const static long rootEvents = StructureNotifyMask | SubstructureNotifyMask | FocusChangeMask | KeymapStateMask;
 
@@ -111,7 +111,7 @@ void mainLoop() {
 int main(int argc, char **argv) {
   string noDaemonArg = "-n", helpArg = "-h";
   if (argc > 2 || (argc == 2 && argv[1] != noDaemonArg) || (argc == 2 && argv[1] == helpArg)) {
-    cout << "Keep per-window keyboard layout\n\nUsage: perWindowLayout [ -n ]\n\t-n\tdo not daemonize\n";
+    cout << "Keep per-window keyboard layout\n\nUsage: perwindowlayout [ -n ]\n\t-n\tdo not daemonize\n";
     return 1;
   }
 
