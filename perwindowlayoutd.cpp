@@ -111,7 +111,7 @@ void mainLoop() {
 int main(int argc, char **argv) {
   string noDaemonArg = "-n", helpArg = "-h";
   if (argc > 2 || (argc == 2 && argv[1] != noDaemonArg) || (argc == 2 && argv[1] == helpArg)) {
-    cout << "Keep per-window keyboard layout\n\nUsage: perwindowlayout [ -n ]\n\t-n\tdo not daemonize\n";
+    cout << "Keep per-window keyboard layout\n\nUsage: perWindowLayout [ -n ] [ -h ]\n\t-n\tdo not daemonize\n-h	this message\n";
     return 1;
   }
 
